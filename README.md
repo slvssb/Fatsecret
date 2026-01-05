@@ -1,28 +1,30 @@
-FatSecret Gem
-=============
+# FatSecret Gem
 
-Introduction
-------------
+## Introduction
+
 Access nutritional information from FatSecret. You need to register with FatSecret to get
 a key and secret. At the moment you can search for food and get its nutritional information,
 however FatSecret provides much more then that, which has not been implemented in this gem.
 
-Installation
-------------
+## Installation
+
 If you are using bundler, you put this in your Gemfile:
 
     source :rubygems
-    gem 'fatsecret-api'
-    
+    gem 'fatsecret-api', git: 'https://github.com/slvssb/Fatsecret.git', branch: 'master'
+
 Then run bundle install
 
-Useage
-------
+## Usage
 
-To use it tell the gem your authentication details:
+To use it, provide your authentication details:
 
-    require 'fatsecret'
-    FatSecret.init(FATSECRET_KEY,FATSECRET_SECRET)
+```ruby
+require 'fatsecret'
+
+# region and language are optional (defaults: region: 'GB', language: 'en')
+FatSecret.init(FATSECRET_KEY, FATSECRET_SECRET, region: 'GB', language: 'en')
+```
 
 Search for food, use the following:
 
@@ -41,6 +43,6 @@ Get a particular recipe if you know its id:
 
     FatSecret.recipe(84411)
 
-CONTRIBUTIONS
--------------
+## CONTRIBUTIONS
+
 Any contributions to improve this gem are welcome.
