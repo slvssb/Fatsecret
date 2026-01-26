@@ -18,7 +18,7 @@ class FatSecret
       
       def food_id_for_barcode(barcode)
         query = {
-          :method => 'food.find_id_for_barcode',
+          :method => 'food.find_id_for_barcode.v2',
           :barcode => barcode
         }
         get(query)
@@ -26,7 +26,7 @@ class FatSecret
       
       def search_food(expression, page_number=0, max_results=20)
         query = {
-          :method => 'foods.search',
+          :method => 'foods.search.v4',
           :search_expression => expression.esc,
           :page_number => page_number,
           :max_results => max_results
@@ -36,7 +36,7 @@ class FatSecret
       
       def food(id)
         query = {
-          :method => 'food.get',
+          :method => 'food.get.v5',
           :food_id => id
         }
         get(query)
