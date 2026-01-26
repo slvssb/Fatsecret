@@ -59,7 +59,36 @@ class FatSecret
       http_params = http_params('GET', params)
       sig = sign(base, secret).esc
       uri = uri_for(http_params, sig)
-      results = JSON.parse(Net::HTTP.get(uri))
+      
+      # Use Net::HTTP.start to have control over headers
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_PEER
+      
+      request = Net::HTTP::Get.new(uri.request_uri)
+      request['Accept'] = 'application/json'
+      request['User-Agent'] = 'FatSecret Ruby Client'
+      
+      response = http.request(request)
+      body = response.body
+      
+      # Check if response is XML (error response)
+      if body && (body.strip.start_with?('<?xml') || body.strip.start_with?('<'))
+        raise "FatSecret API returned XML instead of JSON. Response: #{body[0..500]}"
+      end
+      
+      # Check HTTP status code
+      unless response.is_a?(Net::HTTPSuccess)
+        raise "FatSecret API returned HTTP #{response.code}: #{body[0..500]}"
+      end
+      
+      begin
+        results = JSON.parse(body)
+      rescue JSON::ParserError => e
+        raise "FatSecret API returned invalid JSON. Response: #{body[0..500]}. Error: #{e.message}"
+      end
+      
+      results
     end
     
     def self.base_string(http_method, param_pairs)
